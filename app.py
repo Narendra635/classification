@@ -38,7 +38,8 @@ def get_name(name: str):
 #    JSON data and return the predicted Bank Note with the confidence
 @app.post('/predict')
 def predict_narrative(narrative: str):
-    xt=cv.transform(narrative.split(' '))
+    nararray=[narrative]
+    xt=cv.transform(nararray)
     loaded_model.predict(xt)
     output=la.inverse_transform(loaded_model.predict(xt))
     return {
