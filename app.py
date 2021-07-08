@@ -30,13 +30,24 @@ def index():
 
 # 4. Route with a single parameter, returns the parameter within a message
 #    Located at: http://127.0.0.1:8000/AnyNameHere
-@app.get('/{name}')
-def get_name(name: str):
-    return {'Welcome To AI World': f'{name}'}
+#@app.get('/{name}')
+#def get_name(name: str):
+ #   return {'Welcome To AI World': f'{name}'}
 
 # 3. Expose the prediction functionality, make a prediction from the passed
 #    JSON data and return the predicted Bank Note with the confidence
 @app.post('/predict')
+def predict_narrative(narrative: str):
+    nararray=[narrative]
+    xt=cv.transform(nararray)
+    loaded_model.predict(xt)
+    output=la.inverse_transform(loaded_model.predict(xt))
+    return {
+        'prediction':output
+    }
+
+
+@app.get('/{narrative}')
 def predict_narrative(narrative: str):
     nararray=[narrative]
     xt=cv.transform(nararray)
