@@ -42,6 +42,9 @@ def predict_narrative(narrative: str):
     xt=cv.transform(nararray)
     loaded_model.predict(xt)
     output=la.inverse_transform(loaded_model.predict(xt))
+    output = [item for items in output for item in items]
+    if len(output)==0 : output=["GNIS","RHNG"]
+
     return {
         'prediction':output
     }
@@ -53,6 +56,9 @@ def predict_narrative(narrative: str):
     xt=cv.transform(nararray)
     loaded_model.predict(xt)
     output=la.inverse_transform(loaded_model.predict(xt))
+    output = [item for items in output for item in items]
+    if len(output)==0 : output=["GNIS","RHNG"]
+
     return {
         'prediction':output
     }
