@@ -12,6 +12,12 @@ from fastapi import FastAPI
 import numpy as np
 import pickle
 import pandas as pd
+import json
+import ast
+import re
+from copy import deepcopy
+
+
 # 2. Create the app object
 app = FastAPI()
 
@@ -43,10 +49,27 @@ def predict_narrative(narrative: str):
     loaded_model.predict(xt)
     output=la.inverse_transform(loaded_model.predict(xt))
     output = [item for items in output for item in items]
-    if len(output)==0 : output=["GNIS","RHNG"]
+    response_data = []
+    for i in output:
+        response_data.append(json.loads(re.sub(r",\s*(\w+)", r", '\1'", re.sub(r"\s*\{\s*(\w+)", r"{'\1'", i)).replace("'", '"')))
+
+    print(response_data)
+    res = dict()
+    for dic in response_data:
+        for key, val in dic.items():
+            if key in res:
+
+                res[key].update(val)
+            else:
+                res[key] = val
+    response = []
+    response.append(res)
+    print('Final->>> ',response)
+    if len(output)==0 : output=[{'generalNeglect': {'inadequateSupervision': True}},{'riskOfHarm': {'previousfatality': True}}]
+
 
     return {
-        'prediction':output
+        'data':json.dumps(response)
     }
 
 
@@ -57,11 +80,28 @@ def predict_narrative(narrative: str):
     loaded_model.predict(xt)
     output=la.inverse_transform(loaded_model.predict(xt))
     output = [item for items in output for item in items]
-    if len(output)==0 : output=["GNIS","RHNG"]
+    response_data = []
+    for i in output:
+        response_data.append(json.loads(re.sub(r",\s*(\w+)", r", '\1'", re.sub(r"\s*\{\s*(\w+)", r"{'\1'", i)).replace("'", '"')))
+
+    print(response_data)
+    res = dict()
+    for dic in response_data:
+        for key, val in dic.items():
+            if key in res:
+
+                res[key].update(val)
+            else:
+                res[key] = val
+    response = []
+    response.append(res)
+    print('Final->>> ',response)
+    if len(output)==0 : output=[{'generalNeglect': {'inadequateSupervision': True}},{'riskOfHarm': {'previousfatality': True}}]
+
+
     return {
-        'prediction':output
-    }
-    
+        'data':response
+    }    
 
 # 5. Run the API with uvicorn
 #    Will run on http://127.0.0.1:8000
@@ -69,3 +109,4 @@ if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=8000)
     
 #uvicorn app:app --reload
+##{"mode":"full","isActive":false}
