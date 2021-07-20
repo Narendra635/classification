@@ -22,6 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # 2. Create the app object
 app = FastAPI()
 origins = [
+    
     "http://localhost:4200"
 ]
 
@@ -32,7 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 loaded_model = pickle.load(open( 'ClassificationModel.pkl', 'rb'))
 cv = pickle.load(open( 'transform.pkl', 'rb'))
@@ -67,23 +67,19 @@ def predict_narrative(narrative: str):
         response_data.append(json.loads(re.sub(r",\s*(\w+)", r", '\1'", re.sub(r"\s*\{\s*(\w+)", r"{'\1'", i)).replace("'", '"')))
 
     print(response_data)
-    res = dict()
+    response = dict()
     for dic in response_data:
         for key, val in dic.items():
-            if key in res:
+            if key in response:
 
-                res[key].update(val)
+                response[key].update(val)
             else:
-                res[key] = val
-    response = []
-    response.append(res)
+                response[key] = val
     print('Final->>> ',response)
-    if len(output)==0 : output=[{'generalNeglect': {'inadequateSupervision': True}},{'riskOfHarm': {'previousfatality': True}}]
+    if len(output)==0 : output={'generalNeglect': {'inadequateSupervision': True},'riskOfHarm': {'previousfatality': True}}
 
 
-    return {
-        'data':json.dumps(response)
-    }
+    return response
 
 
 @app.get('/{narrative}')
@@ -98,23 +94,24 @@ def predict_narrative(narrative: str):
         response_data.append(json.loads(re.sub(r",\s*(\w+)", r", '\1'", re.sub(r"\s*\{\s*(\w+)", r"{'\1'", i)).replace("'", '"')))
 
     print(response_data)
-    res = dict()
+    response_data = []
+    for i in output:
+        response_data.append(json.loads(re.sub(r",\s*(\w+)", r", '\1'", re.sub(r"\s*\{\s*(\w+)", r"{'\1'", i)).replace("'", '"')))
+
+    print(response_data)
+    response = dict()
     for dic in response_data:
         for key, val in dic.items():
-            if key in res:
+            if key in response:
 
-                res[key].update(val)
+                response[key].update(val)
             else:
-                res[key] = val
-    response = []
-    response.append(res)
+                response[key] = val
     print('Final->>> ',response)
-    if len(output)==0 : output=[{'generalNeglect': {'inadequateSupervision': True}},{'riskOfHarm': {'previousfatality': True}}]
+    if len(output)==0 : output={'generalNeglect': {'inadequateSupervision': True},'riskOfHarm': {'previousfatality': True}}
 
 
-    return {
-        'data':response
-    }    
+    return response
 
 # 5. Run the API with uvicorn
 #    Will run on http://127.0.0.1:8000
