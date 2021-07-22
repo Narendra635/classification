@@ -76,7 +76,7 @@ def predict_narrative(narrative: str):
             else:
                 response[key] = val
     print('Final->>> ',response)
-    if len(response)==0 : response={'generalNeglect': {'inadequateSupervision': True},'riskOfHarm': {'previousfatality': True}}
+    #if len(response)==0 : response={'generalNeglect': {'inadequateSupervision': True},'riskOfHarm': {'previousfatality': True}}
 
 
     return response
@@ -108,7 +108,7 @@ def predict_narrative(narrative: str):
             else:
                 response[key] = val
     print('Final->>> ',response)
-    if len(response)==0 : response={'generalNeglect': {'inadequateSupervision': True},'riskOfHarm': {'previousfatality': True}}
+    #if len(response)==0 : response={'generalNeglect': {'inadequateSupervision': True},'riskOfHarm': {'previousfatality': True}}
 
 
     return response
